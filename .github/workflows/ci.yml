@@ -1,0 +1,12 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ["master", "main"]
+    paths-ignore: ["docs/**"]
+
+jobs:
+
+  ci:
+    uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.1

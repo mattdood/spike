@@ -1,0 +1,17 @@
+name: Golang-Release
+
+on:
+
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  tags:
+      - '*'
+
+jobs:
+
+  release:
+    uses: mattdood/workflows.github/workflows/golang-release.yml@v0.0.1
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
