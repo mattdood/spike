@@ -9,4 +9,4 @@ on:
 jobs:
 
   ci:
-    uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.2
+    uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.3
