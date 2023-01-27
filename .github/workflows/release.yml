@@ -11,7 +11,7 @@ on:
 jobs:
 
   release:
-    uses: mattdood/workflows.github/workflows/golang-release.yml@v0.0.1
+    uses: mattdood/workflows.github/workflows/golang-release.yml@v0.0.2
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
