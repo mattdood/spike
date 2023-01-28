@@ -39,10 +39,10 @@ func (fs *arrayFlag) Set(value string) error {
 
 // Command types, each is required to have a FlagSet
 type CreateCommand struct {
-	name    string
+	fs          *flag.FlagSet
+	name        string
 	description string
-	status string
-	fs       *flag.FlagSet
+	status      string
 }
 
 func NewCreateCommand() *CreateCommand {
@@ -75,13 +75,11 @@ func (cc *CreateCommand) ParseFlags(args []string) error {
 }
 
 func (cc *CreateCommand) Run() int {
-	run.Create(
+	return run.Create(
 		cc.name,
 		cc.description,
 		cc.status,
 	)
-
-	return 0
 }
 
 // Git command wrapper for adding

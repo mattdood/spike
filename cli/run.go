@@ -10,6 +10,15 @@ spike [OPTION] [args...]
 Options:
     -h, -help, --help display this help
 
+Commands:
+    create      Generates a task
+    list        Lists tasks
+    update      Update a task by Id
+    add         Wraps "git add"
+    init        Wraps "git init"
+    pull        Wraps "git pull"
+    push        Wraps "git push"
+
 Executes various commands to manage personal tasks in a
 '~/spike/tasks.json' file. Optionally handles Git remote
 hosting for tasks.

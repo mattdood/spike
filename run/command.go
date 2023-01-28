@@ -31,7 +31,7 @@ func getUserHome() string {
 
 // Create a new task based on the data input via the CLI
 func Create(name string, description string, status string) int {
-    return 0
+	return 0
 }
 
 // Git command wrapper for `git add`
