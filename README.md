@@ -8,6 +8,21 @@
 A command line TODO application to track my various tasks across systems. The
 tasks are stored in a JSON file to ensure portability.
 
+<img src="https://img.shields.io/github/issues/mattdood/spike"
+    target="https://github.com/mattdood/spike/issues"
+    alt="Badge for GitHub issues."/>
+<img src="https://img.shields.io/github/forks/mattdood/spike"
+    target="https://github.com/mattdood/spike/forks"
+    alt="Badge for GitHub forks."/>
+<img src="https://img.shields.io/github/stars/mattdood/spike"
+    alt="Badge for GitHub stars."/>
+<img src="https://img.shields.io/github/license/mattdood/spike"
+    target="https://github.com/mattdood/spike/raw/master/LICENSE"
+    alt="Badge for GitHub license, MIT."/>
+<img src="https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmattdood%2Fspike"
+    target="https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2Fmattdood%2Fspike"
+    alt="Badge for sharable Twitter link."/>
+
 ## Installation
 Ensure that you have a Golang version `>= 1.19`.
 
