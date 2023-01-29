@@ -10,6 +10,7 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"time"
 )
 
 var (
@@ -227,7 +228,97 @@ func NewTaskID(taskList *TaskList) int {
 }
 
 // Create a new task based on the data input via the CLI
-func Create(name string, description string, status string) int {
+func Create(name string, description string) int {
+	tasks := NewTaskList()
+
+	today := time.Now().Format("2006-01-02")
+
+	nextID := NewTaskID(tasks)
+
+	err := tasks.AddTask(
+		Task{
+			ID:          nextID,
+			Name:        name,
+			Description: description,
+			Created:     today,
+			Updated:     today,
+		},
+		OpenStatus,
+	)
+	if err != nil {
+		fmt.Println("error adding task: ", err)
+		return 1
+	}
+
+	err = SaveTaskList(tasks)
+	if err != nil {
+		fmt.Println("error saving JSON: ", err)
+		return 1
+	}
+
+	return 0
+}
+
+// Update a task's name, description, or status
+func Update(id int, key string, value string, status string) int {
+	tasks := NewTaskList()
+
+	if key == "" && value == "" && status != "" {
+		// Status update
+		err := tasks.UpdateTaskStatus(id, status)
+		if err != nil {
+			fmt.Println("updating task status failed: ", err)
+			return 1
+		}
+	}
+
+	if key != "" && value != "" && status == "" {
+		if key == "name" {
+			// Updating Task.Name
+			if err := tasks.UpdateTaskName(id, value); err != nil {
+				fmt.Println(err)
+				return 1
+			}
+		} else if key == "desc" {
+			// Update Task.Description
+			if err := tasks.UpdateTaskDescription(id, value); err != nil {
+				fmt.Println(err)
+				return 1
+			}
+		} else {
+			// invalid key
+			fmt.Println("key must be one of 'name', 'desc': ", key)
+			return 1
+		}
+	}
+
+	err := SaveTaskList(tasks)
+	if err != nil {
+		fmt.Println("error saving JSON: ", err)
+		return 1
+	}
+
+	return 0
+}
+
+// List tasks
+func List(status string) int {
+	tasks := NewTaskList()
+
+	fmt.Printf("Available tasks for the '%s' status\n", status)
+
+	if status == OpenStatus {
+		for _, task := range tasks.Open {
+			fmt.Printf("ID: %d\nName: %s\nDesc.: %s\nCreated: %s\nUpdated: %s\n\n", task.ID, task.Name, task.Description, task.Created, task.Updated)
+		}
+	}
+
+	if status == ClosedStatus {
+		for _, task := range tasks.Closed {
+			fmt.Printf("ID: %d\nName: %s\nDesc.: %s\nCreated: %s\nUpdated: %s\n\n", task.ID, task.Name, task.Description, task.Created, task.Updated)
+		}
+	}
+
 	return 0
 }
 
