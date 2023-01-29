@@ -22,12 +22,18 @@ tasks are stored in a JSON file to ensure portability.
 <img src="https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmattdood%2Fspike"
     target="https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2Fmattdood%2Fspike"
     alt="Badge for sharable Twitter link."/>
+<img src="https://img.shields.io/github/go-mod/go-version/mattdood/spike"
+    alt="Badge for Golang version."
 
 ## Installation
 Ensure that you have a Golang version `>= 1.19`.
 
 ```bash
+# If git cloning
 make install
+
+# If using go
+go install https://github.com/mattdood/spike
 ```
 
 ## Usage
