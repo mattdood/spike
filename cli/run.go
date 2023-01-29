@@ -12,8 +12,8 @@ Options:
 
 Commands:
     create      Generates a task
-    list        Lists tasks
-    update      Update a task by Id
+    list        Lists tasks of either 'O' or 'C' status
+    update      Update a task name, description, or status by ID value
     add         Wraps "git add"
     init        Wraps "git init"
     pull        Wraps "git pull"
@@ -22,6 +22,8 @@ Commands:
 Executes various commands to manage personal tasks in a
 '~/spike/tasks.json' file. Optionally handles Git remote
 hosting for tasks.
+
+To start after a fresh install run 'spike init'.
 
 Example:
 $ spike create -name "Create new project" -desc "Longer description" -status "O"`
