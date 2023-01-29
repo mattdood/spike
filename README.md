@@ -1,3 +1,9 @@
+<div align="center">
+    <img src="https://github.com/mattdood/spike/raw/master/assets/spike.gif" alt="Gif of Spike Spiegel from Cowboy Bebop in space"/>
+</div>
+
+**Note:** I do not make any claims to the [Cowboy Bebop](https://en.wikipedia.org/wiki/Cowboy_Bebop) assets, names, or trademarks.
+
 # Spike
 A command line TODO application to track my various tasks across systems. The
 tasks are stored in a JSON file to ensure portability.
