@@ -14,7 +14,6 @@ jobs:
   # and fail. To avoid this, start with a ref on tags and
   # successful completion of CI
   release:
-    runs-on: ubuntu-latest
     permissions:
       contents: write
     uses: mattdood/common-ci/.github/workflows/golang-release.yml@v0.0.6
