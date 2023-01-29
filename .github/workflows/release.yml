@@ -2,11 +2,6 @@ name: Golang-Release
 
 on:
 
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: ["master", "main"]
-
   push:
     branches: ["master", "main"]
     tags:
@@ -22,4 +17,3 @@ jobs:
     uses: mattdood/common-ci/.github/workflows/golang-release.yml@v0.0.6
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: ${{ github.event.workflow_run.conclusion == 'success' && startsWith(github.ref, 'refs/tags/v')}}

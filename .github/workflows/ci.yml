@@ -2,9 +2,7 @@ name: CI
 
 on:
 
-  # Run when PR gets updated
   pull_request:
-    types: [opened, reopened, edited]
 
   push:
     branches: ["master", "main"]
@@ -14,7 +12,3 @@ jobs:
 
   ci:
     uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.4
-    if: |
-      github.event_name == 'push' ||
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'push' && contains(github.ref, 'refs/tags/v'))
