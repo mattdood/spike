@@ -1,23 +1,30 @@
 package run
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/fs"
 	"os"
 	"os/exec"
 	"path"
+	"sort"
 	"strings"
 )
 
 var (
 	OutputBaseDirectory = getUserHome()
 	OutputDirectory     = path.Join(OutputBaseDirectory, InstallBaseDirectory)
+	OutputPath          = path.Join(OutputDirectory, TasksPath)
 )
 
 const (
 	InstallBaseDirectory string      = "spike/"
-	FilePermission       fs.FileMode = 00775
+	TasksPath            string      = "tasks.json"
+	FolderPermission     fs.FileMode = 00775
+	FilePermission       fs.FileMode = 00644
+	OpenStatus           string      = "O"
+	ClosedStatus         string      = "C"
 )
 
 func getUserHome() string {
@@ -27,6 +34,196 @@ func getUserHome() string {
 	}
 
 	return homedir
+}
+
+// Nullable values should be pointers
+type Task struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Created     string `json:"created"`
+	Updated     string `json:"updated"`
+	ID          int    `json:"id"`
+}
+
+type TaskList struct {
+	Open   []Task `json:"O"`
+	Closed []Task `json:"C"`
+}
+
+// Add a task to the task list
+func (tl *TaskList) AddTask(t Task, status string) error {
+	if status == OpenStatus {
+		tl.Open = append(tl.Open, t)
+		return nil
+	}
+
+	if status == ClosedStatus {
+		tl.Closed = append(tl.Closed, t)
+		return nil
+	}
+
+	return errors.New("status should be one of: 'O', 'C'")
+}
+
+// Swap a task status between closed an open
+func (tl *TaskList) UpdateTaskStatus(id int, status string) error {
+	today := time.Now().Format("2006-01-02")
+
+	if status == ClosedStatus {
+		for i, task := range tl.Open {
+			if task.ID == id {
+				task.Updated = today
+				// Move from open to closed
+				tl.Closed = append(tl.Closed, task)
+				// Remove task fro mopen
+				tl.Open = append(tl.Open[:i], tl.Open[i+1:]...)
+
+				return nil
+			}
+		}
+
+		return errors.New("task not found in status 'O' to be changed to 'C'")
+	}
+
+	if status == OpenStatus {
+		for i, task := range tl.Closed {
+			if task.ID == id {
+				task.Updated = today
+				// Move from open to closed
+				tl.Open = append(tl.Open, task)
+				// Remove task fro mopen
+				tl.Closed = append(tl.Closed[:i], tl.Closed[i+1:]...)
+
+				return nil
+			}
+		}
+
+		return errors.New("task not found in status 'C' to be changed to 'O'")
+	}
+
+	return errors.New("status must be one of 'O' or 'C'")
+}
+
+func (tl *TaskList) UpdateTaskName(id int, name string) error {
+	var foundTask bool
+
+	today := time.Now().Format("2006-01-02")
+
+	for i, task := range tl.Open {
+		if task.ID == id {
+			tl.Open[i].Name = name
+
+			tl.Open[i].Updated = today
+
+			return nil
+		}
+	}
+
+	if !foundTask {
+		for i, task := range tl.Closed {
+			if task.ID == id {
+				tl.Closed[i].Name = name
+
+				tl.Closed[i].Updated = today
+
+				return nil
+			}
+		}
+	}
+
+	return fmt.Errorf("task not found for ID: %d", id)
+}
+
+func (tl *TaskList) UpdateTaskDescription(id int, desc string) error {
+	var foundTask bool
+
+	today := time.Now().Format("2006-01-02")
+
+	for i, task := range tl.Open {
+		if task.ID == id {
+			tl.Open[i].Name = desc
+			tl.Open[i].Updated = today
+
+			return nil
+		}
+	}
+
+	if !foundTask {
+		for i, task := range tl.Closed {
+			if task.ID == id {
+				tl.Closed[i].Name = desc
+				tl.Closed[i].Updated = today
+
+				return nil
+			}
+		}
+	}
+
+	return fmt.Errorf("task not found for ID: %d", id)
+}
+
+// Read tasks.json file and return representation
+// of data in sorted form. Each "O" and "C" slice is
+// sorted in descending order.
+func NewTaskList() *TaskList {
+	fileData, err := os.ReadFile(OutputPath)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var taskList TaskList
+
+	err = json.Unmarshal(fileData, &taskList)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	sort.Slice(taskList.Open, func(i, j int) bool { return taskList.Open[i].ID > taskList.Open[j].ID })
+	sort.Slice(taskList.Closed, func(i, j int) bool { return taskList.Closed[i].ID > taskList.Closed[j].ID })
+
+	return &taskList
+}
+
+// Save the task list back to JSON
+func SaveTaskList(tasks *TaskList) error {
+	file, err := json.MarshalIndent(tasks, "", "    ")
+	if err != nil {
+		return fmt.Errorf("error marshalling JSON: %s", err)
+	}
+
+	err = os.WriteFile(OutputPath, file, FilePermission)
+	if err != nil {
+		return fmt.Errorf("error writing JSON: %s", err)
+	}
+
+	return nil
+}
+
+// Find the highest ID in the tasks list then
+// increment by 1
+func NewTaskID(taskList *TaskList) int {
+	// Iterate ID field
+	var nextID int
+
+	if len(taskList.Open) > 0 && len(taskList.Closed) > 0 {
+		// Both have tasks
+		if taskList.Open[0].ID > taskList.Closed[0].ID {
+			nextID = taskList.Open[0].ID + 1
+		} else {
+			nextID = taskList.Closed[0].ID + 1
+		}
+	} else if len(taskList.Open) > 0 && len(taskList.Closed) == 0 {
+		// Only open has tasks
+		nextID = taskList.Open[0].ID + 1
+	} else if len(taskList.Closed) > 0 && len(taskList.Open) == 0 {
+		// Only closed has tasks
+		nextID = taskList.Closed[0].ID + 1
+	} else {
+		// Empty file
+		nextID = 0
+	}
+
+	return nextID
 }
 
 // Create a new task based on the data input via the CLI
@@ -50,10 +247,21 @@ func Add(files []string) {
 // Git command wrapper for `git init`
 func Init() {
 	if _, err := os.Stat(OutputDirectory); errors.Is(err, os.ErrNotExist) {
-		err := os.Mkdir(OutputDirectory, FilePermission)
+		err := os.Mkdir(OutputDirectory, FolderPermission)
 		if err != nil {
 			fmt.Println("Failed to create directories")
 			fmt.Println(err)
+		}
+
+		// Create empty task list
+		tasks := TaskList{
+			Open:   []Task{},
+			Closed: []Task{},
+		}
+
+		err = SaveTaskList(&tasks)
+		if err != nil {
+			fmt.Println("error saving JSON: ", err)
 		}
 	}
 
