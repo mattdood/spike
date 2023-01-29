@@ -16,5 +16,5 @@ jobs:
   release:
     uses: mattdood/common-ci/.github/workflows/golang-release.yml@v0.0.6
     secrets:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
     if: ${{ startsWith(github.ref, 'refs/tags/v')}}
