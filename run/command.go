@@ -20,7 +20,7 @@ var (
 )
 
 const (
-	InstallBaseDirectory string      = "spike/"
+	InstallBaseDirectory string      = "spikes/"
 	TasksPath            string      = "tasks.json"
 	FolderPermission     fs.FileMode = 00775
 	FilePermission       fs.FileMode = 00644

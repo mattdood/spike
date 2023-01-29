@@ -61,7 +61,7 @@ is defined below.
 
 **Note:** `id`, `created`, and `updated` are auto generated.
 
-Example `~/spike/tasks.json` structure:
+Example `~/spikes/tasks.json` structure:
 ```json
 {
     "O": [

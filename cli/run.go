@@ -20,7 +20,7 @@ Commands:
     push        Wraps "git push"
 
 Executes various commands to manage personal tasks in a
-'~/spike/tasks.json' file. Optionally handles Git remote
+'~/spikes/tasks.json' file. Optionally handles Git remote
 hosting for tasks.
 
 To start after a fresh install run 'spike init'.
