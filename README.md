@@ -14,5 +14,47 @@ The CLI adds, lists, and changes status of tasks. Use the following:
 
 ```bash
 spike --help
+
+# Create a task
+spike create -name "Something" -desc "Longer description"
+
+# Find a task to update (list open tasks)
+spike list -status O
+
+# Update a task with ID 1 to closed
+spike update -id 1 -status C
+
+# List closed tasks
+spike list -status C
+```
+
+## Task structure
+Tasks are meant to be in either `O` (open) or `C` (closed) status. The structure
+is defined below.
+
+**Note:** `id`, `created`, and `updated` are auto generated.
+
+Example `~/spike/tasks.json` structure:
+```json
+{
+    "O": [
+        {
+            "id": 1,
+            "name": "Sample name",
+            "description": "Longer description here",
+            "created": "2022-01-01",
+            "updated": "2022-01-01"
+        }
+    ],
+    "C": [
+        {
+            "id": 0,
+            "name": "Other name",
+            "description": "Longer description here",
+            "created": "2021-12-01",
+            "updated": "2022-01-01"
+        }
+    ]
+}
 ```
 
