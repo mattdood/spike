@@ -332,25 +332,26 @@ func List(status string) int {
 }
 
 // Git command wrapper for `git add`
-func Add(files []string) {
+func Add(files []string) int {
 	out, err := exec.Command("git", "-C", OutputDirectory, "add", strings.Join(files, " ")).Output()
 	if err != nil {
-		fmt.Println("`git add` exited abnormally")
-		fmt.Println(err)
+                fmt.Println("`git add` exited abnormally: ", err)
+                return 1
 	}
 
 	output := string(out)
 
 	fmt.Print(output)
+        return 0
 }
 
 // Git command wrapper for `git init`
-func Init() {
+func Init() int {
 	if _, err := os.Stat(OutputDirectory); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(OutputDirectory, FolderPermission)
 		if err != nil {
-			fmt.Println("Failed to create directories")
-			fmt.Println(err)
+                        fmt.Println("Failed to create directories: ", err)
+                        return 1
 		}
 
 		// Create empty task list
@@ -362,42 +363,61 @@ func Init() {
 		err = SaveTaskList(&tasks)
 		if err != nil {
 			fmt.Println("error saving JSON: ", err)
+                        return 1
 		}
 	}
 
 	out, err := exec.Command("git", "-C", OutputDirectory, "init").Output()
 	if err != nil {
-		fmt.Println("`git init` exited abnormally")
-		fmt.Println(err)
+                fmt.Println("`git init` exited abnormally: ", err)
+                return 1
 	}
 
 	output := string(out)
 
 	fmt.Print(output)
+        return 0
+}
+
+// Git command wrapper for `git commit`
+func Commit(message string) int {
+
+	out, err := exec.Command("git", "-C", OutputDirectory, "commit", "-m", message).Output()
+	if err != nil {
+                fmt.Println("`git commit` exited abnormally: ", err)
+		return 1
+	}
+
+	output := string(out)
+
+	fmt.Print(output)
+	return 1
 }
 
 // Git command wrapper for `git push`
-func Push() {
+func Push() int {
 	out, err := exec.Command("git", "-C", OutputDirectory, "push").Output()
 	if err != nil {
-		fmt.Println("`git push` exited abnormally")
-		fmt.Println(err)
+                fmt.Println("`git push` exited abnormally: ", err)
+                return 1
 	}
 
 	output := string(out)
 
 	fmt.Print(output)
+        return 0
 }
 
 // Git command wrapper for `git pull`
-func Pull() {
+func Pull() int {
 	out, err := exec.Command("git", "-C", OutputDirectory, "pull").Output()
 	if err != nil {
-		fmt.Println("`git push` exited abnormally")
-		fmt.Println(err)
+                fmt.Println("`git push` exited abnormally: ", err)
+                return 1
 	}
 
 	output := string(out[:])
 
 	fmt.Print(output)
+        return 0
 }

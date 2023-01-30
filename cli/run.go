@@ -14,7 +14,9 @@ Commands:
     create      Generates a task
     list        Lists tasks of either 'O' or 'C' status
     update      Update a task name, description, or status by ID value
+
     add         Wraps "git add"
+    commit      Wraps "git commit"
     init        Wraps "git init"
     pull        Wraps "git pull"
     push        Wraps "git push"
