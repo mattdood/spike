@@ -68,11 +68,11 @@ func (ic *InitCommand) Run() int {
 	return 0
 }
 
-// Git command wrapper for commiting
+// Git command wrapper for committing
 // files to be tracked
 // `git commit <arg>`
 type CommitCommand struct {
-	fs    *flag.FlagSet
+	fs      *flag.FlagSet
 	message string
 }
 
