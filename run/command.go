@@ -26,6 +26,8 @@ const (
 	FilePermission       fs.FileMode = 00644
 	OpenStatus           string      = "O"
 	ClosedStatus         string      = "C"
+	ColorCyan            string      = "\033[0;36m"
+	ColorStop            string      = "\033[0m"
 )
 
 func getUserHome() string {
@@ -305,17 +307,24 @@ func Update(id int, key string, value string, status string) int {
 func List(status string) int {
 	tasks := NewTaskList()
 
+	id := ColorCyan + "ID: " + ColorStop + "%d\n"
+	name := ColorCyan + "Name: " + ColorStop + "%s\n"
+	desc := ColorCyan + "Desc.: " + ColorStop + "%s\n"
+	created := ColorCyan + "Created: " + ColorStop + "%s\n"
+	updated := ColorCyan + "Updated: " + ColorStop + "%s\n\n"
+	outputText := id + name + desc + created + updated
+
 	fmt.Printf("Available tasks for the '%s' status\n", status)
 
 	if status == OpenStatus {
 		for _, task := range tasks.Open {
-			fmt.Printf("ID: %d\nName: %s\nDesc.: %s\nCreated: %s\nUpdated: %s\n\n", task.ID, task.Name, task.Description, task.Created, task.Updated)
+			fmt.Printf(outputText, task.ID, task.Name, task.Description, task.Created, task.Updated)
 		}
 	}
 
 	if status == ClosedStatus {
 		for _, task := range tasks.Closed {
-			fmt.Printf("ID: %d\nName: %s\nDesc.: %s\nCreated: %s\nUpdated: %s\n\n", task.ID, task.Name, task.Description, task.Created, task.Updated)
+			fmt.Printf(outputText, task.ID, task.Name, task.Description, task.Created, task.Updated)
 		}
 	}
 
