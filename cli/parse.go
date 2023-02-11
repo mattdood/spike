@@ -48,8 +48,8 @@ func ParseAndRun(command CommandArgs) int {
 		"update": NewUpdateCommand(),
 		"list":   NewListCommand(),
 
-		"commit": NewCommitCommand(),
 		"add":    NewAddCommand(),
+		"commit": NewCommitCommand(),
 		"init":   NewInitCommand(),
 		"pull":   NewPullCommand(),
 		"push":   NewPushCommand(),
